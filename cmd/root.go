@@ -13,6 +13,7 @@ import (
 
 	"github.com/sevenDatabase/SevenDB/config"
 	"github.com/sevenDatabase/SevenDB/internal/logger"
+	"github.com/sevenDatabase/SevenDB/internal/logging"
 	"github.com/sevenDatabase/SevenDB/server"
 	"github.com/spf13/cobra"
 )
@@ -66,6 +67,9 @@ var rootCmd = &cobra.Command{
 	Short:   "SevenDB - an in-memory database;",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.Load(cmd.Flags())
+		if config.Config.Verbose {
+			logging.Enable("verbose")
+		}
 		slog.SetDefault(logger.New())
 		server.Start()
 	},
