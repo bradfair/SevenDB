@@ -198,7 +198,7 @@ func (t *IOThread) Start(ctx context.Context, shardManager *shardmanager.ShardMa
 		// before any other processing. This ensures the response is first in the
 		// client's receive buffer, ahead of any asynchronous emission deliveries.
 		if isWatchCmd {
-			slog.Info("iothread: processing watch command", slog.String("cmd", c.Cmd), slog.String("client_id", t.ClientID))
+			logging.VInfo("verbose", "iothread: processing watch command", slog.String("cmd", c.Cmd), slog.String("client_id", t.ClientID))
 			if sendErr := t.serverWire.Send(ctx, res.Rs); sendErr != nil {
 				return sendErr.Unwrap()
 			}
@@ -280,7 +280,7 @@ func (t *IOThread) Start(ctx context.Context, shardManager *shardmanager.ShardMa
 		// Watch commands already sent their response earlier (before HandleWatch)
 		// to ensure it arrives before any async emission deliveries.
 		if !isWatchCmd {
-			slog.Info("iothread: sending non-watch response",
+			logging.VInfo("verbose", "iothread: sending non-watch response",
 				slog.String("cmd", c.Cmd),
 				slog.Uint64("fingerprint", res.Rs.Fingerprint64),
 				slog.String("status", res.Rs.Status.String()))
@@ -306,7 +306,7 @@ func (t *IOThread) Start(ctx context.Context, shardManager *shardmanager.ShardMa
 				if shouldNotify {
 					watchManager.NotifyWatchers(_c, shardManager, t)
 				} else {
-					slog.Debug("skip notify for non-mutating command", slog.String("cmd", cmdName))
+					logging.VInfo("verbose", "skip notify for non-mutating command", slog.String("cmd", cmdName))
 				}
 			}
 		}

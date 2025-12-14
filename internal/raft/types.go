@@ -22,6 +22,7 @@ import (
 
 	"github.com/sevenDatabase/SevenDB/config"
 	"github.com/sevenDatabase/SevenDB/internal/harness/clock"
+	"github.com/sevenDatabase/SevenDB/internal/logging"
 	"github.com/sevenDatabase/SevenDB/internal/raftwal"
 	"github.com/sevenDatabase/SevenDB/internal/wal"
 	"google.golang.org/protobuf/proto"
@@ -402,27 +403,39 @@ func (n *noopTransport) Send(ctx context.Context, msgs []raftpb.Message) {}
 // etcdLoggerAdapter adapts slog to etcd/raft Logger interface (fmt-like methods).
 type etcdLoggerAdapter struct{}
 
-func (l *etcdLoggerAdapter) Debug(args ...interface{}) { slog.Debug(fmt.Sprint(args...)) }
+func (l *etcdLoggerAdapter) Debug(args ...interface{}) {
+	logging.VInfo("verbose", fmt.Sprint(args...))
+}
 func (l *etcdLoggerAdapter) Debugf(format string, args ...interface{}) {
-	slog.Debug(fmt.Sprintf(format, args...))
+	logging.VInfo("verbose", fmt.Sprintf(format, args...))
 }
-func (l *etcdLoggerAdapter) Info(args ...interface{}) { slog.Info(fmt.Sprint(args...)) }
+func (l *etcdLoggerAdapter) Info(args ...interface{}) {
+	logging.VInfo("verbose", fmt.Sprint(args...))
+}
 func (l *etcdLoggerAdapter) Infof(format string, args ...interface{}) {
-	slog.Info(fmt.Sprintf(format, args...))
+	logging.VInfo("verbose", fmt.Sprintf(format, args...))
 }
-func (l *etcdLoggerAdapter) Warning(args ...interface{}) { slog.Warn(fmt.Sprint(args...)) }
+func (l *etcdLoggerAdapter) Warning(args ...interface{}) {
+	slog.Warn(fmt.Sprint(args...))
+}
 func (l *etcdLoggerAdapter) Warningf(format string, args ...interface{}) {
 	slog.Warn(fmt.Sprintf(format, args...))
 }
-func (l *etcdLoggerAdapter) Error(args ...interface{}) { slog.Error(fmt.Sprint(args...)) }
+func (l *etcdLoggerAdapter) Error(args ...interface{}) {
+	slog.Error(fmt.Sprint(args...))
+}
 func (l *etcdLoggerAdapter) Errorf(format string, args ...interface{}) {
 	slog.Error(fmt.Sprintf(format, args...))
 }
-func (l *etcdLoggerAdapter) Fatal(args ...interface{}) { slog.Error(fmt.Sprint(args...)) }
+func (l *etcdLoggerAdapter) Fatal(args ...interface{}) {
+	slog.Error(fmt.Sprint(args...))
+}
 func (l *etcdLoggerAdapter) Fatalf(format string, args ...interface{}) {
 	slog.Error(fmt.Sprintf(format, args...))
 }
-func (l *etcdLoggerAdapter) Panic(args ...interface{}) { slog.Error(fmt.Sprint(args...)) }
+func (l *etcdLoggerAdapter) Panic(args ...interface{}) {
+	slog.Error(fmt.Sprint(args...))
+}
 func (l *etcdLoggerAdapter) Panicf(format string, args ...interface{}) {
 	slog.Error(fmt.Sprintf(format, args...))
 }

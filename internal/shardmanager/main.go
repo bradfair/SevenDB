@@ -19,6 +19,7 @@ import (
 	"github.com/sevenDatabase/SevenDB/config"
 	"github.com/sevenDatabase/SevenDB/internal/bucket"
 	"github.com/sevenDatabase/SevenDB/internal/emission"
+	"github.com/sevenDatabase/SevenDB/internal/logging"
 	"github.com/sevenDatabase/SevenDB/internal/raft"
 	"github.com/sevenDatabase/SevenDB/internal/shard"
 	"github.com/sevenDatabase/SevenDB/internal/shardthread"
@@ -325,7 +326,7 @@ func (manager *ShardManager) Run(ctx context.Context) {
 						if first, ok := snaps[0].(interface{}); ok {
 							b, err := json.Marshal(first)
 							if err == nil {
-								slog.Info("raft_status", slog.String("node", fmt.Sprintf("%d", manager.localRaftID)), slog.String("snapshot", string(b)))
+								logging.VInfo("verbose", "raft_status", slog.String("node", fmt.Sprintf("%d", manager.localRaftID)), slog.String("snapshot", string(b)))
 							}
 						}
 					}()

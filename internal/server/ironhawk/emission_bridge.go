@@ -9,6 +9,7 @@ import (
 
 	"github.com/dicedb/dicedb-go/wire"
 	"github.com/sevenDatabase/SevenDB/internal/emission"
+	"github.com/sevenDatabase/SevenDB/internal/logging"
 )
 
 // BridgeSender routes emission DataEvents to existing IOThreads using the WatchManager maps.
@@ -49,7 +50,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 			}
 			delivered++
 		}
-		slog.Info("emission-bridge delivered (broadcast)", slog.Int("count", delivered), slog.String("sub_id", ev.SubID), slog.String("emit_seq", ev.EmitSeq.String()))
+		logging.VInfo("verbose", "emission-bridge delivered (broadcast)", slog.Int("count", delivered), slog.String("sub_id", ev.SubID), slog.String("emit_seq", ev.EmitSeq.String()))
 		if delivered == 0 {
 			return fmt.Errorf("bridge: no recipients for sub_id %s", ev.SubID)
 		}
@@ -88,7 +89,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 		} else {
 			// Fingerprint present but no active subscribers; don't silently deliver
 			// to the original encoded clientID (which might be stale/wrong).
-			slog.Info("emission-bridge: no active subscribers for fp; aborting delivery", slog.Uint64("fp", fp), slog.String("sub_id", ev.SubID))
+			logging.VInfo("verbose", "emission-bridge: no active subscribers for fp; aborting delivery", slog.Uint64("fp", fp), slog.String("sub_id", ev.SubID))
 			return fmt.Errorf("bridge: no active subscribers for fp %d", fp)
 		}
 	} else {
@@ -97,7 +98,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 		targetIDs = []string{originalClientID}
 	}
 	// Diagnostic log: show how targets resolved for this emission
-	slog.Info("emission-bridge: resolved targets",
+	logging.VInfo("verbose", "emission-bridge: resolved targets",
 		slog.String("sub_id", ev.SubID),
 		slog.Uint64("fp", fp),
 		slog.Bool("used_fp_map", usedFPMap),
@@ -108,7 +109,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 	for _, clientID := range targetIDs {
 		thread, ok := b.wm.clientWatchThreadMap[clientID]
 		if !ok || thread == nil {
-			slog.Info("emission-bridge: no active thread for resolved client",
+			logging.VInfo("verbose", "emission-bridge: no active thread for resolved client",
 				slog.String("client_id", clientID),
 				slog.String("sub_id", ev.SubID))
 			continue
@@ -141,7 +142,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 				slog.Warn("bridge send failed", slog.Any("error", err), slog.String("client", thread.ClientID), slog.String("sub_id", ev.SubID))
 			}
 		} else {
-			slog.Info("emission-bridge: delivered to target", slog.String("client_id", clientID), slog.String("sub_id", ev.SubID))
+			logging.VInfo("verbose", "emission-bridge: delivered to target", slog.String("client_id", clientID), slog.String("sub_id", ev.SubID))
 			delivered++
 		}
 	}
@@ -150,7 +151,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 	// thread that might be interested in this fingerprint. This handles the case where a client
 	// reconnected but didn't re-issue WATCH (e.g., CLI disconnect/reconnect scenario).
 	if delivered == 0 && fp != 0 {
-		slog.Info("emission-bridge: attempting fallback delivery by scanning all threads",
+		logging.VInfo("verbose", "emission-bridge: attempting fallback delivery by scanning all threads",
 			slog.Uint64("fp", fp),
 			slog.String("sub_id", ev.SubID))
 
@@ -176,7 +177,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 				}
 
 				if err := thread.serverWire.Send(ctx, rs); err == nil {
-					slog.Info("emission-bridge: fallback delivery succeeded",
+					logging.VInfo("verbose", "emission-bridge: fallback delivery succeeded",
 						slog.String("client_id", clientID),
 						slog.Uint64("fp", fp))
 					delivered++
@@ -199,7 +200,7 @@ func (b *BridgeSender) Send(ctx context.Context, ev *emission.DataEvent) error {
 		return fmt.Errorf("bridge: no active thread for client(s) %v", targetIDs)
 	}
 
-	slog.Info("emission-bridge delivered", slog.Int("count", delivered), slog.String("sub_id", ev.SubID), slog.String("emit_seq", ev.EmitSeq.String()))
+	logging.VInfo("verbose", "emission-bridge delivered", slog.Int("count", delivered), slog.String("sub_id", ev.SubID), slog.String("emit_seq", ev.EmitSeq.String()))
 	return nil
 }
 
