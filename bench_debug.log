@@ -1,0 +1,64 @@
+Running Baseline (SET)...
+Throughput vs Latency Benchmark
+Host: 127.0.0.1:7379
+Rate: 1000 to 50000, step 5000
+Conns: 50, Duration per step: 5s, Payload: 64B, Cmd: SET
+Testing Target Rate: 1000 ops/sec... done. Actual: 999.35 ops/sec, P99 Latency: 3.54 ms
+Testing Target Rate: 6000 ops/sec... done. Actual: 5996.92 ops/sec, P99 Latency: 4.30 ms
+Testing Target Rate: 11000 ops/sec... done. Actual: 10992.00 ops/sec, P99 Latency: 3.68 ms
+Testing Target Rate: 16000 ops/sec... done. Actual: 15989.88 ops/sec, P99 Latency: 5.03 ms
+Testing Target Rate: 21000 ops/sec... done. Actual: 20988.08 ops/sec, P99 Latency: 6.94 ms
+Testing Target Rate: 26000 ops/sec... done. Actual: 25985.53 ops/sec, P99 Latency: 8.96 ms
+Testing Target Rate: 31000 ops/sec... done. Actual: 26488.29 ops/sec, P99 Latency: 6.29 ms
+Testing Target Rate: 36000 ops/sec... done. Actual: 28415.32 ops/sec, P99 Latency: 10.10 ms
+Testing Target Rate: 41000 ops/sec... done. Actual: 29221.73 ops/sec, P99 Latency: 10.13 ms
+Testing Target Rate: 46000 ops/sec... done. Actual: 26362.30 ops/sec, P99 Latency: 7.16 ms
+
+Results saved to throughput_vs_latency.json
+Running 90:10...
+Throughput vs Latency Benchmark
+Host: 127.0.0.1:7379
+Rate: 1000 to 50000, step 5000
+Conns: 50, Duration per step: 5s, Payload: 64B, Read Ratio: 0.90
+Testing Target Rate: 1000 ops/sec... done. Actual: 999.37 ops/sec, P99 Latency: 2.94 ms
+Testing Target Rate: 6000 ops/sec... done. Actual: 5996.26 ops/sec, P99 Latency: 5.51 ms
+Testing Target Rate: 11000 ops/sec... done. Actual: 10993.90 ops/sec, P99 Latency: 2.88 ms
+Testing Target Rate: 16000 ops/sec... done. Actual: 15990.32 ops/sec, P99 Latency: 4.20 ms
+Testing Target Rate: 21000 ops/sec... done. Actual: 20972.06 ops/sec, P99 Latency: 5.01 ms
+Testing Target Rate: 26000 ops/sec... done. Actual: 25976.68 ops/sec, P99 Latency: 4.54 ms
+Testing Target Rate: 31000 ops/sec... done. Actual: 30805.33 ops/sec, P99 Latency: 4.56 ms
+Testing Target Rate: 36000 ops/sec... done. Actual: 32001.42 ops/sec, P99 Latency: 4.52 ms
+Testing Target Rate: 41000 ops/sec... done. Actual: 32107.96 ops/sec, P99 Latency: 4.62 ms
+Testing Target Rate: 46000 ops/sec... done. Actual: 31845.30 ops/sec, P99 Latency: 4.82 ms
+
+Results saved to throughput_vs_latency_ratio_0.90.json
+Running 50:50...
+Throughput vs Latency Benchmark
+Host: 127.0.0.1:7379
+Rate: 1000 to 50000, step 5000
+Conns: 50, Duration per step: 5s, Payload: 64B, Read Ratio: 0.50
+Testing Target Rate: 1000 ops/sec... done. Actual: 999.28 ops/sec, P99 Latency: 2.92 ms
+Testing Target Rate: 6000 ops/sec... done. Actual: 5996.85 ops/sec, P99 Latency: 3.71 ms
+Testing Target Rate: 11000 ops/sec... done. Actual: 10992.04 ops/sec, P99 Latency: 2.86 ms
+Testing Target Rate: 16000 ops/sec... done. Actual: 15990.56 ops/sec, P99 Latency: 5.53 ms
+Testing Target Rate: 21000 ops/sec... done. Actual: 20985.96 ops/sec, P99 Latency: 5.38 ms
+Testing Target Rate: 26000 ops/sec... done. Actual: 25987.63 ops/sec, P99 Latency: 4.70 ms
+Testing Target Rate: 31000 ops/sec... done. Actual: 30622.40 ops/sec, P99 Latency: 4.42 ms
+Testing Target Rate: 36000 ops/sec... done. Actual: 30360.65 ops/sec, P99 Latency: 4.56 ms
+Testing Target Rate: 41000 ops/sec... done. Actual: 30605.10 ops/sec, P99 Latency: 4.56 ms
+Testing Target Rate: 46000 ops/sec... done. Actual: 30635.40 ops/sec, P99 Latency: 4.46 ms
+
+Results saved to throughput_vs_latency_ratio_0.50.json
+Running Profile Run (30k ops/sec)...
+Throughput vs Latency Benchmark
+Host: 127.0.0.1:7379
+Rate: 30000 to 30000, step 5000
+Conns: 50, Duration per step: 30s, Payload: 64B, Read Ratio: 0.50
+Testing Target Rate: 30000 ops/sec...Capturing CPU profile...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to localhost port 9090 after 1 ms: Could not connect to server
+ done. Actual: 29962.35 ops/sec, P99 Latency: 4.70 ms
+
+Results saved to throughput_vs_latency_ratio_0.50.json

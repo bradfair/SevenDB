@@ -1,0 +1,84 @@
+
+
+███████╗███████╗██╗   ██╗███████╗███╗   ██╗  ██████╗ ██████╗
+██╔════╝██╔════╝██║   ██║██╔════╝████╗  ██║  ██╔══██╗██╔══██╗
+███████╗█████╗  ██║   ██║█████╗  ██╔██╗ ██║  ██║  ██║██████╔╝
+╚════██║██╔══╝  ██║   ██║██╔══╝  ██║╚██╗██║  ██║  ██║██╔══██╗
+███████║███████╗╚██████╔╝███████╗██║ ╚████║  ██████╔╝██████╔╝
+╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝  ╚═════╝ ╚═════╝
+
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mstarting SevenDB[0m [36mversion=[0mv1.0.10
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mrunning with[0m [36mengine=[0mironhawk
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mrunning with[0m [36mport=[0m7379
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mrunning on[0m [36mcores=[0m16
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mrunning with[0m [36mshards=[0m16
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mwal configuration[0m [36mmetadata_dir=[0m/home/blagden/Documents/sevenDB/.sevendb_meta [36mwal_dir=[0m/home/blagden/Documents/sevenDB/.sevendb_meta/logs
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mwal initialized[0m [36mdir=[0m/home/blagden/Documents/sevenDB/.sevendb_meta/logs [36mvariant=[0mforge
+rotating segment
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0ma [36mshard=[0m0
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mb [36mshard=[0m1
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mc [36mshard=[0m2
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0md [36mshard=[0m3
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0me [36mshard=[0m4
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mf [36mshard=[0m5
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mg [36mshard=[0m6
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mh [36mshard=[0m7
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mi [36mshard=[0m8
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mj [36mshard=[0m9
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mk [36mshard=[0m10
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0ml [36mshard=[0m11
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mm [36mshard=[0m12
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mn [36mshard=[0m13
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mo [36mshard=[0m14
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1memission contract enabled for shard[0m [36mbucket_uuid=[0mp [36mshard=[0m15
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft enabled for shards[0m [36mcount=[0m16 [36mlocal_id=[0m1
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m0
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m1
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m2
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m3
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m4
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m5
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m6
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m7
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m8
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m9
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m10
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m11
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m12
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m13
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m14
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mraft shard status[0m [36mlastApplied=[0m0 [36mrole=[0mleader [36mshard=[0m15
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1minitial status file written[0m [36mbytes=[0m5212 [36mpath=[0m/home/blagden/Documents/sevenDB/.sevendb_meta/status.json
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mrestoring database from WAL[0m
+[90m2025-12-13T19:16:47+05:30[0m [32mINF[0m [1mstatus writer active[0m [36malt=[0m/home/blagden/Documents/sevenDB/status.json [36minterval=[0m1000 [36mprimary=[0m/home/blagden/Documents/sevenDB/.sevendb_meta/status.json
+[90m2025-12-13T19:16:48+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:49+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:50+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:51+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:52+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:53+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:54+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:55+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:56+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:57+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:58+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:16:59+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:00+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:01+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:02+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:03+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:04+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:05+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:06+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:07+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:08+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:09+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:10+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:11+05:30[0m [32mINF[0m [1mraft_status[0m [36mnode=[0m1 [36msnapshot=[0m"{\"shard_id\":\"a\",\"leader_id\":\"stub\",\"is_leader\":true,\"last_applied_index\":0,\"last_snapshot_index\":0,\"committed_since_snapshot\":0,\"per_bucket_commit\":{},\"pruned_through_index\":0,\"transport_peers_total\":0,\"transport_peers_connected\":0}"
+[90m2025-12-13T19:17:12+05:30[0m [31mERR[0m [1merror restoring from WAL[0m [36merror=[0m[31m[1m"error reading WAL data: unexpected EOF"[0m[0m
+[90m2025-12-13T19:17:12+05:30[0m [32mINF[0m [1mdatabase restored from WAL[0m
+[90m2025-12-13T19:17:12+05:30[0m [32mINF[0m [1mready to accept connections[0m
+[90m2025-12-13T19:17:12+05:30[0m [32mINF[0m [1mmetrics http server starting[0m [36maddr=[0m:9090
+[90m2025-12-13T19:17:12+05:30[0m [31mERR[0m [1mError occurred[0m [36merror=[0m[31m[1m"address already in use"[0m[0m
+[90m2025-12-13T19:17:12+05:30[0m [31mERR[0m [1mfailed to bind server[0m [36merror=[0m[31m[1m"failed to bind socket: address already in use"[0m[0m
+[90m2025-12-13T19:17:12+05:30[0m [31mERR[0m [1m*ironhawk.Server error[0m [36merror=[0m[31m[1m"failed to bind socket: address already in use"[0m[0m

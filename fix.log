@@ -1,0 +1,30 @@
+Re-running 50:50 Full Bench...
+Throughput vs Latency Benchmark
+Host: 127.0.0.1:7379
+Rate: 1000 to 50000, step 5000
+Conns: 50, Duration per step: 5s, Payload: 64B, Read Ratio: 0.50
+Testing Target Rate: 1000 ops/sec... done. Actual: 999.39 ops/sec, P99 Latency: 3.45 ms
+Testing Target Rate: 6000 ops/sec... done. Actual: 5995.22 ops/sec, P99 Latency: 3.16 ms
+Testing Target Rate: 11000 ops/sec... done. Actual: 10993.30 ops/sec, P99 Latency: 5.56 ms
+Testing Target Rate: 16000 ops/sec... done. Actual: 15992.72 ops/sec, P99 Latency: 4.66 ms
+Testing Target Rate: 21000 ops/sec... done. Actual: 20988.45 ops/sec, P99 Latency: 5.38 ms
+Testing Target Rate: 26000 ops/sec... done. Actual: 25988.50 ops/sec, P99 Latency: 6.91 ms
+Testing Target Rate: 31000 ops/sec... done. Actual: 30983.63 ops/sec, P99 Latency: 7.94 ms
+Testing Target Rate: 36000 ops/sec... done. Actual: 35687.31 ops/sec, P99 Latency: 10.79 ms
+Testing Target Rate: 41000 ops/sec... done. Actual: 35028.67 ops/sec, P99 Latency: 10.74 ms
+Testing Target Rate: 46000 ops/sec... done. Actual: 35889.09 ops/sec, P99 Latency: 10.92 ms
+
+Results saved to throughput_vs_latency_ratio_0.50.json
+Running Profile Run (30k ops/sec)...
+Throughput vs Latency Benchmark
+Host: 127.0.0.1:7379
+Rate: 30000 to 30000, step 5000
+Conns: 50, Duration per step: 30s, Payload: 64B, Read Ratio: 0.50
+Testing Target Rate: 30000 ops/sec...Capturing CPU profile via 127.0.0.1...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to 127.0.0.1 port 9090 after 1 ms: Could not connect to server
+ done. Actual: 29989.62 ops/sec, P99 Latency: 8.81 ms
+
+Results saved to throughput_vs_latency_ratio_0.50.json

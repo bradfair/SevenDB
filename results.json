@@ -1,0 +1,42 @@
+[
+  {
+    "n": 1,
+    "throughputOpsSec": 755.8,
+    "latencyP50Ms": 5.207222,
+    "latencyP95Ms": 7.925564,
+    "latencyP99Ms": 8.782365,
+    "latencyMaxMs": 10.270025
+  },
+  {
+    "n": 10,
+    "throughputOpsSec": 748.5,
+    "latencyP50Ms": 5.458692999999999,
+    "latencyP95Ms": 8.652050999999998,
+    "latencyP99Ms": 9.893180999999998,
+    "latencyMaxMs": 15.084294
+  },
+  {
+    "n": 100,
+    "throughputOpsSec": 759.8,
+    "latencyP50Ms": 5.096496,
+    "latencyP95Ms": 8.14283,
+    "latencyP99Ms": 9.317364999999999,
+    "latencyMaxMs": 12.892287000000001
+  },
+  {
+    "n": 1000,
+    "throughputOpsSec": 750.5,
+    "latencyP50Ms": 5.32875,
+    "latencyP95Ms": 8.334767999999999,
+    "latencyP99Ms": 10.076113,
+    "latencyMaxMs": 17.228161
+  },
+  {
+    "n": 10000,
+    "throughputOpsSec": 763.8,
+    "latencyP50Ms": 4.714301,
+    "latencyP95Ms": 7.577002,
+    "latencyP99Ms": 12.613394999999999,
+    "latencyMaxMs": 21.284411
+  }
+]
