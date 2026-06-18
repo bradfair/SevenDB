@@ -14,6 +14,8 @@ of bug hypotheses with code citations.
 |--------|--------------------|--------|
 | `EmissionContract.tla` | P1 "effective-once delivery across crash / restart / migration" | **Counterexample found** — effective-once violated by outbox resurrection after restart |
 | `Reconnect.tla` | P5 reconnect resumes from `commit_index+1` / STALE / INVALID | **Counterexample found** — production reconnect always returns `OK, next=0` (epoch hardcoded to 0); fix variant (`FixHolds`) passes |
+| `Migration.tla` | P3/P6 gap-free order; previous epoch drained before new emissions | **Counterexample found** — cross-epoch outbox keyed by commit index loses an entry (overwrite + epoch-regression strand); `EpochAwareOutbox=TRUE` fix passes |
+| `Compaction.tla` | P8 never compact beyond `min` client ack | **Counterexample found** — volume-triggered snapshot (nil data) prunes un-acked emissions; `AckAwareCompaction=TRUE` fix passes |
 
 ## Running TLC
 
@@ -48,3 +50,8 @@ with witness `pos=0, ack=0, comp=0` (design wants `OK, next=1`; production
 returns `OK, next=0`). The same module's `FixHolds` invariant — which threads
 the client's real epoch instead of the hardcoded `0` — passes over all inputs,
 proving the property is not vacuous.
+
+`Migration.tla` and `Compaction.tla` each carry a CONSTANT that switches
+between the real behavior (invariant fails) and a candidate fix (invariant
+passes); see the `.cfg` headers. Set `EpochAwareOutbox` / `AckAwareCompaction`
+to `TRUE` to watch the fix variant pass.

@@ -185,7 +185,7 @@ guarantee never fires.
   `FixHolds` invariant (thread the client's real epoch instead of the hardcoded
   `0`) passes over all inputs, so the spec is non-vacuous.
 
-### H2 — Cross-epoch purge by commit index (P6)
+### H2/H3 — Cross-epoch outbox loss (P3, P6) — **CONFIRMED** (`Migration.tla`)
 
 `outbox.go purge(sub, upTo.CommitIndex)` removes every entry with
 `commitIndex ≤ upTo`, **ignoring epoch**. Combined with the per-bucket commit
@@ -194,19 +194,24 @@ ack in a new epoch can purge — or fail to purge — entries from another epoch
 incorrectly. The design (§7) says "old outbox entries from the previous epoch
 are drained before any new emissions," but there is no epoch-ordered drain.
 
-- **Property `EpochDrainOrder`**: no epoch-N emission is delivered while any
-  epoch-(N-1) entry is still pending.
-- **Expected result**: violated — there is no code enforcing it.
+The outbox is a map keyed by **commit index only** (`outbox.go write()`,
+`pendingSorted()` sorts on commit index), while the notifier's skip test is
+**epoch-aware** (`notifier.go processTick`: an entry whose epoch is below the
+`sentThrough` epoch is skipped forever). After a restart the per-bucket commit
+index resets to low values while the epoch advances, so old- and new-epoch
+entries collide on commit index. There is also no `EPOCH_CREATE` handler in the
+emission applier (`applier.go applyCommand` switch), so nothing performs §7's
+"drain previous epoch first."
 
-### H3 — Epoch advancement / migration is unimplemented (P6)
-
-The applier's command switch (`applier.go applyCommand`) has cases for
-SUBSCRIBE / DATA_EVENT / OUTBOX_WRITE / ACK / OUTBOX_PURGE — but **no
-`EPOCH_CREATE`**, which §7 of the design centers the migration story on. The
-only epoch change is the wall-clock bump on restart (H-context for §4). So the
-"clean epoch rollover, no resets, no duplicates" premise has no implementation
-to test against; a migration model will immediately show `emit_seq` continuity
-breaking (this is the same machinery that produces the §4 bug).
+- **Property `NoLoss`**: every committed delta is either delivered or still
+  recoverable from the outbox.
+- **Result (confirmed by TLC):** violated in 4 states. epoch 1 writes delta
+  `d1` at commit index 1; restart → epoch 2; epoch 2 writes `d2` at commit
+  index 1, which **overwrites** `d1` in the commit-index-keyed map → `d1` is
+  lost before it is ever delivered. (The epoch-regression *strand* — sending a
+  new-epoch low-index entry first, which then permanently skips an old-epoch
+  high-index entry — is also reachable.) The `EpochAwareOutbox=TRUE` fix
+  variant (key/order by full emit_seq) passes all states.
 
 ### H4 — Rebind reconciles three independent watermarks (P1, P5)
 
@@ -224,27 +229,53 @@ reconnect with all interleavings should check:
   the old sub id, or a cleared one on the new, causes either a skipped entry
   (gap → lost update) or a resend after the resume point.
 
-### H5 — Compaction safety point vs. ack watermark (P8)
+### H5 — Compaction safety point vs. ack watermark (P8) — **CONFIRMED** (`Compaction.tla`)
 
 `emission-contract.mdx` §8 defines `safety_point = min(cold checkpoint, min
-client ack, migration hold)`. In code, `ApplyOutboxPurge` sets
-`compactThrough = ack` directly per sub (`outbox.go:138`), i.e. compaction
-tracks a *single* sub's ack with no `min` across cold replicas / migration hold.
+client ack, migration hold)` and "the system will never compact beyond
+safety_point." In code, raft snapshot+compaction is triggered purely by volume
+(`types.go:1461` `committedSinceSnap >= snapshotThreshold`), the snapshot stores
+**no application state** (`types.go:1463` `CreateSnapshot(applied, cs, nil)`),
+and it then `Compact`/`PruneEntries` at the applied index (`types.go:1469`) with
+no reference to client acks. Since the outbox is reconstructed only by replaying
+`OUTBOX_WRITE`/`OUTBOX_PURGE` records, pruning them with a nil snapshot loses any
+un-acked emission below the snapshot index.
 
-- **Property `CompactSafe`**: `compactedThrough ≤ min(active acks, cold
-  checkpoints)`.
-- **Expected result**: violated once more than one consumer / a cold replica is
-  modeled.
+- **Property `CompactSafe`**: `pruned ≤ ackWM` (never compact past the ack
+  watermark).
+- **Result (confirmed by TLC):** violated in 4 states — two emissions are
+  committed with no acks, the snapshot fires at the threshold and prunes through
+  the applied index (`pruned=2`) while `ackWM=0`, discarding both un-acked
+  emissions. The `AckAwareCompaction=TRUE` fix (clamp the compaction point to
+  the ack watermark) passes.
 
-### H6 — Single-emitter / lease vs. leadership (P9)
+### H6 — Single-emitter / lease vs. leadership (P9) — *open, lower confidence*
 
 Design §6 says exactly one replica emits per (bucket, epoch), via a lease that
-is "decoupled from raft leadership." A spec with N replicas, lease handoff, and
-a leadership change should check **`AtMostOneEmitter`**. Worth modeling because
-the apply path gates emission on `IsLeader()` (`applier.go`) while the design
-gates it on the *lease* — if those two can disagree (old leader still thinks it
-holds the lease during a partition), two emitters can run, producing duplicate
-`OUTBOX_WRITE`s.
+is "decoupled from raft leadership," yet the apply path gates emission on
+`IsLeader()` (`applier.go`) and the notifier's gated sender is enabled per
+leadership (`shardmanager/main.go`). A spec with N replicas, lease handoff, and
+a leadership change would check **`AtMostOneEmitter`**.
+
+Caveat (why this is held back): raft (PreVote + CheckQuorum) prevents two
+leaders from *committing* `OUTBOX_WRITE`s, and on the send side a stale leader
+that briefly double-emits sends the **same** `emit_seq`, which client de-dup is
+designed to absorb. So a naive model would report a "duplicate" that is actually
+dedup-safe — a false positive. This is only worth modeling if a path is found
+where the two emitters can produce **different** `emit_seq`s for the same delta
+(e.g. interacting with the §4 epoch resurrection). Model it after a real
+divergent-identity path is identified, not before.
+
+### H4 — Rebind reconciles three watermarks (P1, P5) — *open*
+
+`Rebind.tla` (not yet written) should check **`GapFree`** across
+disconnect→rebind→reconnect. Note that the cross-epoch ordering hazards this
+hypothesis worried about (e.g. `resumeFrom` being a bare `uint64` compared by
+commit index, ignoring epoch — `notifier.go:253`) overlap with what
+`Migration.tla` already demonstrates; the distinct risk left to model is a
+*same-epoch* gap caused purely by the un-migrated `sentThrough` watermark
+(`RebindByFingerprint` moves `lastAck`/`compactThrough` but not the notifier's
+`sentThrough`).
 
 ---
 
@@ -253,10 +284,14 @@ holds the lease during a partition), two emitters can run, producing duplicate
 1. **Done:** `EmissionContract.tla` → P1 effective-once (counterexample found).
 2. **Done:** `Reconnect.tla` → H1 `ReconnectSound` (counterexample found;
    `FixHolds` confirms non-vacuity).
-3. `Rebind.tla` → H4 `GapFree` across disconnect/rebind/reconnect.
-4. `Migration.tla` → H2/H3 `EpochDrainOrder` + `emit_seq` continuity.
-5. `Compaction.tla` → H5 `CompactSafe`; `Lease.tla` → H6 `AtMostOneEmitter`.
-6. A `Determinism` refinement (P7): two log replays under different schedules
+3. **Done:** `Migration.tla` → H2/H3 `NoLoss` across an epoch bump
+   (counterexample found; `EpochAwareOutbox` fix passes).
+4. **Done:** `Compaction.tla` → H5 `CompactSafe` (counterexample found;
+   `AckAwareCompaction` fix passes).
+5. `Rebind.tla` → H4 `GapFree` (same-epoch, un-migrated `sentThrough`).
+6. `Lease.tla` → H6 `AtMostOneEmitter` (only after a divergent-`emit_seq` path
+   is found; see H6 caveat).
+7. A `Determinism` refinement (P7): two log replays under different schedules
    refine the same canonical transcript — checks the headline determinism claim
    against scheduling adversaries, not just repeated fixed runs.
 
