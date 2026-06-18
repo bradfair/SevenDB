@@ -12,7 +12,8 @@ of bug hypotheses with code citations.
 
 | Module | Premise under test | Status |
 |--------|--------------------|--------|
-| `EmissionContract.tla` | "effective-once delivery across crash / restart / migration" | **Counterexample found** (effective-once violated by outbox resurrection after restart) |
+| `EmissionContract.tla` | P1 "effective-once delivery across crash / restart / migration" | **Counterexample found** — effective-once violated by outbox resurrection after restart |
+| `Reconnect.tla` | P5 reconnect resumes from `commit_index+1` / STALE / INVALID | **Counterexample found** — production reconnect always returns `OK, next=0` (epoch hardcoded to 0); fix variant (`FixHolds`) passes |
 
 ## Running TLC
 
@@ -36,3 +37,14 @@ Expected output for `EmissionContract`: `Error: Invariant EffectiveOnce is
 violated.` followed by a 7-state trace showing the same source delta delivered
 to the client twice — once under epoch 1, then again (resurrected from the
 durable outbox) under epoch 2 after a restart.
+
+```sh
+java -cp tla2tools.jar tlc2.TLC -deadlock \
+  -config Reconnect.cfg Reconnect.tla
+```
+
+Expected output for `Reconnect`: `Error: Invariant ReconnectSound is violated`
+with witness `pos=0, ack=0, comp=0` (design wants `OK, next=1`; production
+returns `OK, next=0`). The same module's `FixHolds` invariant — which threads
+the client's real epoch instead of the hardcoded `0` — passes over all inputs,
+proving the property is not vacuous.

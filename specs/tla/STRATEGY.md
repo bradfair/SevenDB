@@ -154,7 +154,7 @@ test:
 
 Each was found by code review and is stated as a property a spec can refute.
 
-### H1 — Reconnect always force-restarts to index 0 (P5, P3)
+### H1 — Reconnect always force-restarts to index 0 (P5, P3) — **CONFIRMED** (`Reconnect.tla`)
 
 `internal/cmd/cmd_emitreconnect.go:44` builds the `ReconnectRequest` with
 `EpochCounter: 0`, hardcoded. But the live epoch is the wall-clock value from
@@ -176,8 +176,14 @@ guarantee never fires.
 
 - **Property `ReconnectSound`**: the `ReconnectAck` equals the spec function of
   (client pos, ack, compaction, epoch) from `emission-contract.mdx` §5.2.
-- **Expected result**: violated — TLC shows a client whose position is below the
-  compaction watermark getting `OK/next=0` instead of `STALE_SEQUENCE`.
+- **Result (confirmed by TLC):** violated. `Reconnect.tla` models a same-epoch
+  reconnect (network blip, no restart) and checks the production decision
+  against the design decision over all `(pos, ack, comp)` with `comp ≤ ack`.
+  TLC returns witness `pos=0, ack=0, comp=0`: design wants `OK, next=1`,
+  production returns `OK, next=0` — and every input where the design wants
+  `STALE`/`INVALID` is likewise collapsed to `OK, next=0`. The module's
+  `FixHolds` invariant (thread the client's real epoch instead of the hardcoded
+  `0`) passes over all inputs, so the spec is non-vacuous.
 
 ### H2 — Cross-epoch purge by commit index (P6)
 
@@ -245,8 +251,8 @@ holds the lease during a partition), two emitters can run, producing duplicate
 ## 6. Suggested order of work
 
 1. **Done:** `EmissionContract.tla` → P1 effective-once (counterexample found).
-2. `Reconnect.tla` → H1 `ReconnectSound` (cheap, high-confidence, isolated to
-   one function's logic).
+2. **Done:** `Reconnect.tla` → H1 `ReconnectSound` (counterexample found;
+   `FixHolds` confirms non-vacuity).
 3. `Rebind.tla` → H4 `GapFree` across disconnect/rebind/reconnect.
 4. `Migration.tla` → H2/H3 `EpochDrainOrder` + `emit_seq` continuity.
 5. `Compaction.tla` → H5 `CompactSafe`; `Lease.tla` → H6 `AtMostOneEmitter`.
