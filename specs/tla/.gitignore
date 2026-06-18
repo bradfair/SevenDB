@@ -1,0 +1,5 @@
+# TLC model-checker scratch output
+states/
+*.st
+*.fp
+tla2tools.jar
