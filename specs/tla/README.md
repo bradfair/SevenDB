@@ -12,7 +12,7 @@ of bug hypotheses with code citations.
 
 | Module | Premise under test | Status |
 |--------|--------------------|--------|
-| `EmissionContract.tla` | P1 "effective-once delivery across crash / restart / migration" | **Counterexample found** — effective-once violated by outbox resurrection after restart |
+| `EmissionContract.tla` | P1 "effective-once delivery across crash / restart / migration" | **Counterexample found** — effective-once violated by outbox resurrection after restart; `IdempotentEmit=TRUE` fix passes |
 | `Reconnect.tla` | P5 reconnect resumes from `commit_index+1` / STALE / INVALID | **Counterexample found** — production reconnect always returns `OK, next=0` (epoch hardcoded to 0); fix variant (`FixHolds`) passes |
 | `Migration.tla` | P3/P6 gap-free order; previous epoch drained before new emissions | **Counterexample found** — cross-epoch outbox keyed by commit index loses an entry (overwrite + epoch-regression strand); `EpochAwareOutbox=TRUE` fix passes |
 | `Compaction.tla` | P8 never compact beyond `min` client ack | **Counterexample found** — volume-triggered snapshot (nil data) prunes un-acked emissions; `AckAwareCompaction=TRUE` fix passes |

@@ -52,23 +52,35 @@ SpecNext(p, ack, comp) ==
     ELSE IF p < comp    THEN comp
     ELSE p + 1
 
-\* ---- The implementation's production behavior ----
-\* The request epoch is hardcoded to 0; ServerEpoch is nonzero; so the very
-\* first branch fires for every input, regardless of p/ack/comp.
-ProdStatus(p, ack, comp) == "OK"
-ProdNext(p, ack, comp)   == 0
+\* ---- The actual reconnect decision as implemented ----
+\* outbox.go Reconnect() FIRST applies an epoch-mismatch guard, and only if the
+\* request epoch matches the live epoch does it run the OK/STALE/INVALID logic:
+\*   if reqEpoch != currentEpoch: return {OK, next:0}
+\*   else: <SpecStatus/SpecNext>
+\* We model the decision as a function of the REQUEST epoch, so the same code
+\* path is exercised for both the production and the fixed request construction
+\* (no tautology: the fixed variant goes through the guard, it is not defined to
+\* equal Spec).
+DecisionStatus(reqEpoch, p, ack, comp) ==
+    IF reqEpoch # ServerEpoch THEN "OK" ELSE SpecStatus(p, ack, comp)
+DecisionNext(reqEpoch, p, ack, comp) ==
+    IF reqEpoch # ServerEpoch THEN 0   ELSE SpecNext(p, ack, comp)
+
+\* Production: cmd_emitreconnect.go:44 builds the request with epoch hardcoded 0,
+\* while the live epoch (ServerEpoch) is nonzero -> guard always fires.
+ProdStatus(p, ack, comp) == DecisionStatus(0, p, ack, comp)
+ProdNext(p, ack, comp)   == DecisionNext(0, p, ack, comp)
+
+\* Fix: thread the client's REAL epoch (= the live ServerEpoch) into the request,
+\* so the guard does NOT fire and the decision reduces to the design logic. This
+\* is derived through DecisionStatus, not asserted equal to Spec.
+FixedStatus(p, ack, comp) == DecisionStatus(ServerEpoch, p, ack, comp)
+FixedNext(p, ack, comp)   == DecisionNext(ServerEpoch, p, ack, comp)
 
 \* Realistic watermark domain: you only compact through what has been acked,
 \* so comp <= ack. Client position p ranges over all indices.
 Inputs == { <<p, ack, comp>> \in (0..MaxIdx) \X (0..MaxIdx) \X (0..MaxIdx) :
             comp <= ack }
-
-\* ---- A discriminating "fixed" variant: thread the client's REAL epoch ----
-\* (ServerEpoch) instead of 0. Then the epoch guard does not fire and the
-\* implementation reduces to the design decision -> the property holds. This
-\* proves the spec distinguishes correct from buggy behavior (not vacuous).
-FixedStatus(p, ack, comp) == SpecStatus(p, ack, comp)
-FixedNext(p, ack, comp)   == SpecNext(p, ack, comp)
 
 \* Enumerate every reconnect input as a distinct initial state so that a TLC
 \* invariant violation reports the exact (position, ack, compacted) witness.

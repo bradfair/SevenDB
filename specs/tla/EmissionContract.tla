@@ -47,8 +47,10 @@
 EXTENDS Naturals, FiniteSets
 
 CONSTANTS
-    NumDeltas,   \* number of source DATA events committed to the raft log
-    MaxEpoch     \* bound on the number of (re)starts (epoch counter ceiling)
+    NumDeltas,      \* number of source DATA events committed to the raft log
+    MaxEpoch,       \* bound on the number of (re)starts (epoch counter ceiling)
+    IdempotentEmit  \* FALSE = real code (idempotency key = (epoch, ci));
+                    \* TRUE  = fix (idempotency key = source ci, epoch-independent)
 
 \* A sequence number is a record [e |-> epoch, ci |-> commitIndex].
 LexLeq(a, b)  == \/ a.e < b.e
@@ -85,14 +87,20 @@ Produce ==
         /\ produced' = produced \cup {ci}
         /\ UNCHANGED <<epoch, outbox, purged, owritten, clientLast, effects>>
 
+\* Real code keys emit idempotency on the FULL (epoch, ci): after a restart
+\* bumps the epoch, a source delta that was already delivered/purged is re-emitted
+\* under the new epoch. The fix keys idempotency on the source commit index alone,
+\* so a delta is emitted at most once across all epochs.
+AlreadyEmitted(ci) ==
+    IF IdempotentEmit THEN \E o \in owritten : o.ci = ci
+                      ELSE [e |-> epoch, ci |-> ci] \in owritten
+
 \* Leader applies a committed DATA_EVENT and proposes OUTBOX_WRITE under the
-\* CURRENT epoch. The only guard in the code is "have I already produced this
-\* exact (epoch,ci) OUTBOX_WRITE?" -- so after a restart bumps the epoch this
-\* re-fires for an already-delivered, already-purged source delta.
+\* CURRENT epoch (applier.go DATA_EVENT case, guarded only by IsLeader()).
 LeaderEmit ==
     \E ci \in produced :
         LET seq == [e |-> epoch, ci |-> ci] IN
-            /\ seq \notin owritten
+            /\ ~ AlreadyEmitted(ci)
             /\ owritten' = owritten \cup {seq}
             /\ outbox'   = outbox   \cup {seq}
             /\ UNCHANGED <<epoch, produced, purged, clientLast, effects>>

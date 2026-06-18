@@ -76,6 +76,44 @@ stamped, indicates the reviews were genuinely critical.
   changes and the in-memory `sentThrough` is gone, so the entry would re-send —
   no gap. This matches the `Rebind.tla` "same-epoch" framing.
 
+## Round 2: auditing the MODELS (not the bugs)
+
+A second adversarial pass targeted the TLA+ specs themselves: are they faithful
+to the code, or do they bake in their conclusions (vacuous/tautological
+invariants, false-positive invariants that flag benign states, rigged
+`Init`/`Next`, strawman "fix" variants)? Each reviewer had TLC and was
+encouraged to mutate copies of the spec and re-run.
+
+| Spec | Model verdict | Notes |
+|---|---|---|
+| `EmissionContract.tla` | FAITHFUL | Reviewer ran 3 TLC mutation experiments; confirmed the violation is caused specifically by the `(epoch,ci)` idempotency key + epoch bump, and that adding old-record replay still violates (the omission is not load-bearing). |
+| `Reconnect.tla` | FAITHFUL core, **defect found** | `ReconnectSound` is fair and runtime-corroborated, but the original `FixHolds` was **tautological** (`FixedStatus == SpecStatus`). |
+| `Migration.tla` | FAITHFUL | Reviewer decoupled the two fix switches and showed each bug (overwrite, strand) fails independently and only fixing BOTH passes — rules out a rigged toggle. |
+| `Compaction.tla` | FAITHFUL | Reviewer stress-tested the strongest refutation (omitted follower floor) and found it does not rescue the code: the floor runs after the destructive prune, governs only the WAL-segment cleanup, and tracks follower replication, not client acks. |
+| `Rebind.tla` | FAITHFUL | Reviewer initially attacked with `next=processed+1`, discovered the real code uses `next=0`, and retracted its own strawman. `GapFree` confirmed not a false positive (the stranded state is genuinely unrecoverable). |
+
+### Defects found in the specs, and the fixes applied
+
+1. **`Reconnect.tla` — tautological fix variant.** `FixedStatus`/`FixedNext` were
+   defined as literally `== SpecStatus`/`SpecNext`, so `FixHolds` was true by
+   reflexivity and proved nothing. Fixed by introducing `DecisionStatus(reqEpoch,
+   …)` that models the real epoch-mismatch guard; production threads `reqEpoch=0`,
+   the fix threads `reqEpoch=ServerEpoch`. `FixHolds` now passes *through* the
+   guard (40 states), not by definition. `ReconnectSound` still fails as before.
+
+2. **`EmissionContract.tla` — no discriminating fix variant.** The cfg had no
+   switch, so non-vacuity was never self-demonstrated. Added CONSTANT
+   `IdempotentEmit`: FALSE = real (idempotency key `(epoch, ci)`), TRUE = fix
+   (idempotency key = source `ci`). TLC: FALSE violates `EffectiveOnce`, TRUE
+   passes (10 states). The model now proves it discriminates.
+
+Note (charitable abstraction, left as-is): `EmissionContract.tla` models a
+client that de-dups on `emit_seq`, but no such client de-dup exists in this repo
+(`emission_bridge.go` ships the raw seq; server-side dedups are keyed on the same
+lex `(epoch,ci)` and also fail to suppress the resurrected entry). The model thus
+gives the system the benefit of the doubt and *still* violates effective-once —
+reality is worse, not better.
+
 ## Why the existing test suite misses all five
 
 Each finding lives in a fault/recovery interleaving the current tests do not
