@@ -266,16 +266,32 @@ where the two emitters can produce **different** `emit_seq`s for the same delta
 (e.g. interacting with the §4 epoch resurrection). Model it after a real
 divergent-identity path is identified, not before.
 
-### H4 — Rebind reconciles three watermarks (P1, P5) — *open*
+### H4 — Same-epoch lost update across reconnect (P3/P4) — **CONFIRMED** (`Rebind.tla`)
 
-`Rebind.tla` (not yet written) should check **`GapFree`** across
-disconnect→rebind→reconnect. Note that the cross-epoch ordering hazards this
-hypothesis worried about (e.g. `resumeFrom` being a bare `uint64` compared by
-commit index, ignoring epoch — `notifier.go:253`) overlap with what
-`Migration.tla` already demonstrates; the distinct risk left to model is a
-*same-epoch* gap caused purely by the un-migrated `sentThrough` watermark
-(`RebindByFingerprint` moves `lastAck`/`compactThrough` but not the notifier's
-`sentThrough`).
+The notifier skips any entry with commit index `≤ sentThrough`, and the resume
+floor can only *add* a skip, never override the `sentThrough` skip
+(`notifier.go processTick`). So the only way to re-send an entry at/below
+`sentThrough` is to clear `sentThrough`. That clear happens in just two places,
+and both can be skipped on a fast reconnect:
+
+1. The disconnect-time clear (`ClearEmissionWatermarksForClient`,
+   `main.go:176`) is skipped when a new thread already took over — the
+   explicitly-commented fast-reconnect race (`main.go:171-177`).
+2. The reconnect-time clear inside `SetResumeFrom` only runs on the `next != 0`
+   path; `next == 0` early-returns without clearing (`notifier.go:157-167`), and
+   the production reconnect always returns `next = 0` (H1).
+
+Because the client supplies a **stable** id (`iothread.go:141-142`), the
+reconnect sub id equals the old one and `RebindByFingerprint` early-returns
+(`outbox.go:335`) without touching `sentThrough`.
+
+- **Property `GapFree`**: while connected, no committed-but-unprocessed entry is
+  stranded at/below `sentThrough`.
+- **Result (confirmed by TLC):** violated in 5 states — commit 1, send 1 (in
+  flight), disconnect (race skips the clear; `sentThrough=1` lingers, in-flight
+  copy lost), reconnect (`next=0`, `sentThrough` untouched) → entry 1 is
+  unprocessed, not in flight, and `≤ sentThrough`, so it is never re-sent. The
+  `CorrectReconnect=TRUE` fix (clear `sentThrough` on reconnect) passes.
 
 ---
 
@@ -288,7 +304,8 @@ commit index, ignoring epoch — `notifier.go:253`) overlap with what
    (counterexample found; `EpochAwareOutbox` fix passes).
 4. **Done:** `Compaction.tla` → H5 `CompactSafe` (counterexample found;
    `AckAwareCompaction` fix passes).
-5. `Rebind.tla` → H4 `GapFree` (same-epoch, un-migrated `sentThrough`).
+5. **Done:** `Rebind.tla` → H4 `GapFree` same-epoch lost update across reconnect
+   (counterexample found; `CorrectReconnect` fix passes).
 6. `Lease.tla` → H6 `AtMostOneEmitter` (only after a divergent-`emit_seq` path
    is found; see H6 caveat).
 7. A `Determinism` refinement (P7): two log replays under different schedules

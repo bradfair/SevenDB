@@ -16,6 +16,7 @@ of bug hypotheses with code citations.
 | `Reconnect.tla` | P5 reconnect resumes from `commit_index+1` / STALE / INVALID | **Counterexample found** — production reconnect always returns `OK, next=0` (epoch hardcoded to 0); fix variant (`FixHolds`) passes |
 | `Migration.tla` | P3/P6 gap-free order; previous epoch drained before new emissions | **Counterexample found** — cross-epoch outbox keyed by commit index loses an entry (overwrite + epoch-regression strand); `EpochAwareOutbox=TRUE` fix passes |
 | `Compaction.tla` | P8 never compact beyond `min` client ack | **Counterexample found** — volume-triggered snapshot (nil data) prunes un-acked emissions; `AckAwareCompaction=TRUE` fix passes |
+| `Rebind.tla` | P3/P4 no same-epoch lost update across reconnect | **Counterexample found** — fast-reconnect race + `next=0` leave `sentThrough` uncleared, stranding an unprocessed entry; `CorrectReconnect=TRUE` fix passes |
 
 ## Running TLC
 
